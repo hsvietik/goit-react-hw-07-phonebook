@@ -1,21 +1,31 @@
 import PropTypes from 'prop-types';
+import { FaRegHeart } from 'react-icons/fa';
 import {
   List,
   Item,
   ContactName,
+  ToggleFavourite,
   DeleteButton,
   DeleteIcon,
+  ColoredHeart,
 } from './ContactList.styled';
-import { deleteContact } from '../../redux/contactsSlice';
+import { deleteContact, toggleFavorite } from '../../redux/contactsSlice';
 import { useDispatch } from 'react-redux';
 
 export const ContactList = ({ contacts }) => {
   const dispatch = useDispatch();
   return (
     <List>
-      {contacts.map(({ id, name, number }) => {
+      {contacts.map(({ id, name, number, favorite }) => {
         return (
           <Item key={id}>
+            <ToggleFavourite
+              type="button"
+              onClick={() => dispatch(toggleFavorite(id))}
+            >
+              {favorite ? <ColoredHeart /> : <FaRegHeart />}
+            </ToggleFavourite>
+
             <ContactName>
               {name}: {number}
             </ContactName>

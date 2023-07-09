@@ -6,7 +6,7 @@ export const Filter = () => {
   const dispatch = useDispatch();
   return (
     <SearchForm>
-      <p>Find contacts by name</p>
+      <p>Find contact by name</p>
       <SearchInput
         name="search"
         type="text"

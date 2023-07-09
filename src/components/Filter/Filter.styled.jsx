@@ -7,8 +7,9 @@ export const SearchForm = styled.div`
 export const SearchInput = styled.input`
   padding: 10px;
   border-radius: 6px;
+  background-color: #e1d5bb;
   &:focus,
   &hover {
-    outline: solid 2px lightskyblue;
+    outline: solid 2px #c7a149;
   }
 `;

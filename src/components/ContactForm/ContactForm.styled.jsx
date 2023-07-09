@@ -7,15 +7,17 @@ export const StyledForm = styled.form`
   gap: 10px;
   padding: 30px;
   border: solid 2px;
-  background-color: lightyellow;
+  border-radius: 6px;
+  background-color: #389677;
 `;
 
 export const StyledInput = styled.input`
   padding: 10px;
   border-radius: 6px;
+  background-color: #e1d5bb;
   &:focus,
   &:hover {
-    outline: solid 2px lightskyblue;
+    outline: solid 2px #c7a149;
   }
 `;
 export const FormButton = styled.button`
@@ -23,9 +25,10 @@ export const FormButton = styled.button`
   padding: 10px;
   border-radius: 6px;
   font-size: 16px;
+  background-color: #c7a149;
   &:focus,
   &:hover {
-    background-color: lightskyblue;
+    background-color: #b38f41;
   }
 `;
 export const ErrorMessage = styled.p`

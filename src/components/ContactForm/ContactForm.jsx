@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -33,6 +34,7 @@ const schema = yup
 
 export function ContactForm() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -46,6 +48,7 @@ export function ContactForm() {
   const onSubmit = ({ name, number }) => {
     dispatch(addContact({ name, number }));
     reset();
+    navigate('/', { replace: true });
   };
 
   return (

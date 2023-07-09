@@ -1,26 +1,19 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-
-import { ContactForm } from './ContactForm/ContactForm';
-import { Filter } from './Filter/Filter';
-import { ContactList } from './ContactList/ContactList';
-import { Container } from './App.styled';
+import { lazy } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import SharedLayout from './SharedLayout/SharedLayout';
+const Home = lazy(() => import('../pages/Home'));
+const AddContact = lazy(() => import('../pages/AddContact'));
+const NotFound = lazy(() => import('../pages/NotFound'));
 
 export function App() {
-  const contacts = useSelector(state => state.contacts);
-  const filter = useSelector(state => state.filter);
-
-  let filteredContacts = contacts.filter(({ name }) =>
-    name.toLowerCase().includes(filter)
-  );
-
   return (
-    <Container>
-      <h1>Phonebook</h1>
-      <ContactForm />
-      <h2>Contacts</h2>
-      <Filter />
-      <ContactList contacts={filteredContacts} />
-    </Container>
+    <Routes>
+      <Route path="/" element={<SharedLayout />}>
+        <Route index element={<Home />} />
+        <Route path="add" element={<AddContact />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
   );
 }

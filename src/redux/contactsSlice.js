@@ -32,6 +32,7 @@ const contactsSlice = createSlice({
             id: nanoid(),
             name,
             number,
+            favorite: false,
           },
         };
       },
@@ -39,8 +40,16 @@ const contactsSlice = createSlice({
     deleteContact(state, action) {
       return state.filter(contact => contact.id !== action.payload);
     },
+    toggleFavorite(state, action) {
+      for (const contact of state) {
+        if (contact.id === action.payload) {
+          contact.favorite = !contact.favorite;
+        }
+      }
+    },
   },
 });
 
-export const { addContact, deleteContact } = contactsSlice.actions;
+export const { addContact, deleteContact, toggleFavorite } =
+  contactsSlice.actions;
 export const contactsReducer = contactsSlice.reducer;
