@@ -4,13 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { nanoid } from 'nanoid';
 import {
   StyledForm,
   StyledInput,
   FormButton,
   ErrorMessage,
 } from './ContactForm.styled.jsx';
-import { addContact } from '../../redux/contactsSlice.js';
+import { addContact } from '../../redux/operations.js';
+import { setFilter } from '../../redux/filterSlice';
 
 const schema = yup
   .object()
@@ -35,6 +37,7 @@ const schema = yup
 export function ContactForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  let currentDate = new Date().toJSON();
   const {
     register,
     handleSubmit,
@@ -46,7 +49,16 @@ export function ContactForm() {
   });
 
   const onSubmit = ({ name, number }) => {
-    dispatch(addContact({ name, number }));
+    const contact = {
+      createdAt: currentDate,
+      name,
+      number,
+      favorite: false,
+      id: nanoid(),
+    };
+    console.log(contact);
+    dispatch(addContact(contact));
+    dispatch(setFilter(''));
     reset();
     navigate('/', { replace: true });
   };

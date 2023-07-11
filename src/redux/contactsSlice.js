@@ -1,55 +1,80 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { nanoid } from 'nanoid';
+import {
+  fetchContacts,
+  addContact,
+  deleteContact,
+  toggleFavorite,
+} from './operations';
 import Notiflix from 'notiflix';
 
-const contactsInitialState = [
-  { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-  { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-  { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-  { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-];
+const handlePending = state => {
+  state.isLoading = true;
+};
+
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+  return Notiflix.Notify.failure(`Oops, something went wrong.`, 100);
+};
+const handleFetchContacts = (state, action) => {
+  state.isLoading = false;
+  state.error = null;
+  state.items = action.payload;
+};
+const handleAddContact = (state, action) => {
+  state.isLoading = false;
+  state.error = null;
+  console.log(action.payload);
+  const contactExists = state.items.find(
+    ({ name }) => name === action.payload.name
+  );
+
+  if (contactExists) {
+    return Notiflix.Notify.failure(
+      `${action.payload.name} is already in contacts.`,
+      100
+    );
+  }
+  state.items.push(action.payload);
+};
+const handleDeleteContact = (state, action) => {
+  state.isLoading = false;
+  state.error = null;
+  const index = state.items.findIndex(
+    contact => contact.id === action.payload.id
+  );
+  state.items.splice(index, 1);
+};
+const handleToggleFavorite = (state, action) => {
+  state.isLoading = false;
+  state.error = null;
+  const index = state.items.findIndex(
+    contact => contact.id === action.payload.id
+  );
+  state.items.splice(index, 1, action.payload);
+};
 
 const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: contactsInitialState,
-  reducers: {
-    addContact: {
-      reducer(state, action) {
-        const contactExists = state.find(
-          ({ name }) => name === action.payload.name
-        );
-        if (contactExists) {
-          return Notiflix.Notify.failure(
-            `${action.payload.name} is already in contacts.`,
-            100
-          );
-        }
-        state.push(action.payload);
-      },
-      prepare({ name, number }) {
-        return {
-          payload: {
-            id: nanoid(),
-            name,
-            number,
-            favorite: false,
-          },
-        };
-      },
-    },
-    deleteContact(state, action) {
-      return state.filter(contact => contact.id !== action.payload);
-    },
-    toggleFavorite(state, action) {
-      for (const contact of state) {
-        if (contact.id === action.payload) {
-          contact.favorite = !contact.favorite;
-        }
-      }
-    },
+  initialState: {
+    items: [],
+    isLoading: false,
+    error: null,
   },
+  extraReducers: builder =>
+    builder
+      .addCase(fetchContacts.pending, handlePending)
+      .addCase(fetchContacts.fulfilled, handleFetchContacts)
+      .addCase(fetchContacts.rejected, handleRejected)
+      .addCase(addContact.pending, handlePending)
+      .addCase(addContact.fulfilled, handleAddContact)
+      .addCase(addContact.rejected, handleRejected)
+      .addCase(deleteContact.pending, handlePending)
+      .addCase(deleteContact.fulfilled, handleDeleteContact)
+      .addCase(deleteContact.rejected, handleRejected)
+      .addCase(toggleFavorite.pending, handlePending)
+      .addCase(toggleFavorite.fulfilled, handleToggleFavorite)
+      .addCase(toggleFavorite.rejected, handleRejected),
 });
 
-export const { addContact, deleteContact, toggleFavorite } =
-  contactsSlice.actions;
 export const contactsReducer = contactsSlice.reducer;
