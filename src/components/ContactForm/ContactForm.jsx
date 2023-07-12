@@ -1,16 +1,17 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import Notiflix from 'notiflix';
+import { useSelector, useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { nanoid } from 'nanoid';
 import {
   StyledForm,
   StyledInput,
   FormButton,
   ErrorMessage,
 } from './ContactForm.styled.jsx';
+import { getContacts } from '../../redux/selectors';
 import { addContact } from '../../redux/operations.js';
 import { setFilter } from '../../redux/filterSlice';
 
@@ -37,7 +38,7 @@ const schema = yup
 export function ContactForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  let currentDate = new Date().toJSON();
+  const contacts = useSelector(getContacts);
   const {
     register,
     handleSubmit,
@@ -49,15 +50,11 @@ export function ContactForm() {
   });
 
   const onSubmit = ({ name, number }) => {
-    const contact = {
-      createdAt: currentDate,
-      name,
-      number,
-      favorite: false,
-      id: nanoid(),
-    };
-    console.log(contact);
-    dispatch(addContact(contact));
+    const contactExists = contacts.find(contact => contact.name === name);
+    if (contactExists) {
+      return Notiflix.Notify.failure(`${name} is already in contacts.`, 100);
+    }
+    dispatch(addContact({ name, number }));
     dispatch(setFilter(''));
     reset();
     navigate('/', { replace: true });

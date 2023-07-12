@@ -24,17 +24,7 @@ const handleFetchContacts = (state, action) => {
 const handleAddContact = (state, action) => {
   state.isLoading = false;
   state.error = null;
-  console.log(action.payload);
-  const contactExists = state.items.find(
-    ({ name }) => name === action.payload.name
-  );
 
-  if (contactExists) {
-    return Notiflix.Notify.failure(
-      `${action.payload.name} is already in contacts.`,
-      100
-    );
-  }
   state.items.push(action.payload);
 };
 const handleDeleteContact = (state, action) => {
